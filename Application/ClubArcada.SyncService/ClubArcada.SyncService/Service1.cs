@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace ClubArcada.SyncService
@@ -15,6 +8,7 @@ namespace ClubArcada.SyncService
     public partial class Service1 : ServiceBase
     {
         private Timer _timer;
+        private Timer _timerTournamentResults;
 
         public Service1()
         {
@@ -28,7 +22,30 @@ namespace ClubArcada.SyncService
             _timer.Elapsed += _timer_Elapsed;
             _timer.Enabled = true;
 
+            _timerTournamentResults = new Timer();
+            _timerTournamentResults.Interval = 300000;
+            _timerTournamentResults.Elapsed += _timerTournamentResults_Elapsed; ;
+            _timerTournamentResults.Enabled = true;
+
             WriteErrorLog("SyncService started");
+        }
+
+        private void _timerTournamentResults_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                _timerTournamentResults.Stop();
+                SyncData.SyncData.SynTournaments();
+                SyncData.SyncData.SncTournamentResulst();
+            }
+            catch (Exception exp)
+            {
+                WriteErrorLog(exp.GetBaseException().ToString());
+            }
+            finally
+            {
+                _timerTournamentResults.Start();
+            }
         }
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -38,7 +55,6 @@ namespace ClubArcada.SyncService
                 _timer.Stop();
                 SyncData.SyncData.SyncUsers();
                 SyncData.SyncData.SyncRequests();
-
             }
             catch (Exception exp)
             {
@@ -52,6 +68,7 @@ namespace ClubArcada.SyncService
 
         protected override void OnStop()
         {
+            WriteErrorLog("SyncService stopped");
         }
 
         private static void WriteErrorLog(string message)

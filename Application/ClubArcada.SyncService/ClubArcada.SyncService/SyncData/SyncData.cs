@@ -60,7 +60,7 @@ namespace ClubArcada.SyncService.SyncData
                 {
                     var toUpdate = newList.SingleOrDefault(y => y.Id == r.RequestId);
 
-                    if(toUpdate.DateCompleted != r.DateCompleted || toUpdate.Status != toUpdate.Status)
+                    if (toUpdate.DateCompleted != r.DateCompleted || toUpdate.Status != toUpdate.Status)
                     {
                         Common.BusinessObjects.Data.RequestData.SetResolved(CR, toUpdate.Id);
                     }
@@ -74,7 +74,7 @@ namespace ClubArcada.SyncService.SyncData
 
         public static void SynTournaments()
         {
-            var oldTours = OldData.Data.UserData.GetTournaments();
+            var oldTours = OldData.Data.UserData.GetTournaments().Where(t => t.Date.Year == 2016 && t.Date.Month > 9).ToList();
 
             var filtered = oldTours.Where(t => !t.DateDeleted.HasValue && t.Detail.IsNotNull()).ToList();
             var newTours = Common.BusinessObjects.Data.TournamentData.GetList(CR);
@@ -83,6 +83,14 @@ namespace ClubArcada.SyncService.SyncData
             {
                 if (newTours.Select(nt => nt.Id).Contains(u.TournamentId))
                 {
+                    var tu = newTours.SingleOrDefault(n => n.Id == u.TournamentId);
+
+                    if (tu.IsRunning != u.IsRunning)
+                    {
+                        tu.IsRunning = u.IsRunning.True();
+
+                        ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, tu);
+                    }
                 }
                 else
                 {
@@ -122,6 +130,70 @@ namespace ClubArcada.SyncService.SyncData
                     };
 
                     ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, newReq);
+                }
+            }
+        }
+
+        public static void SncTournamentResulst()
+        {
+            var oldList = OldData.Data.UserData.GetTournamentResults().Where(p => p.DateAdded > DateTime.Now.AddMonths(-4)).ToList();
+
+            var newList = Common.BusinessObjects.Data.TournamentPlayerData.GetList(CR);
+
+            foreach (var o in oldList)
+            {
+                if (newList.Select(tp => tp.Id).Contains(o.TournamentResultId))
+                {
+                    var toUpdate = newList.SingleOrDefault(tp => tp.Id == o.TournamentResultId);
+                    if (toUpdate.State != o.State || toUpdate.DateDeleted != o.DateDeleted || toUpdate.ReEntryCount != o.ReEntryCount || toUpdate.ReBuyCount != o.ReBuyCount || toUpdate.AddOnCount != o.AddOnCount || toUpdate.PokerCount != o.PokerCount || toUpdate.StraightFlushCount != o.StraightFlushCount || toUpdate.RoyalFlushCount != o.RoyalFlushCount || toUpdate.SpecialAddOnCount != o.SpecialAddOnCount || toUpdate.Points != (decimal)o.Points || toUpdate.Rank != o.Rank)
+                    {
+                        toUpdate.State = o.State.HasValue ? o.State.Value : 0;
+                        toUpdate.AddOnCount = o.AddOnCount;
+                        toUpdate.DateDeleted = o.DateDeleted;
+                        toUpdate.Points = (decimal)o.Points;
+                        toUpdate.PokerCount = o.PokerCount;
+                        toUpdate.Rank = o.Rank;
+                        toUpdate.ReBuyCount = o.ReBuyCount;
+                        toUpdate.ReEntryCount = o.ReEntryCount.HasValue ? o.ReEntryCount.Value : 0;
+                        toUpdate.RoyalFlushCount = o.RoyalFlushCount;
+                        toUpdate.SpecialAddOnCount = o.SpecialAddOnCount.HasValue ? o.SpecialAddOnCount.Value : 0;
+                        toUpdate.StraightFlushCount = o.StraightFlushCount;
+
+                        ClubArcada.Common.BusinessObjects.Data.TournamentPlayerData.Save(CR, toUpdate);
+                    }
+                    else
+                    {
+                    }
+                }
+                else
+                {
+                    var newPlayer = new TournamentPlayer()
+                    {
+                        Id = o.TournamentResultId,
+                        TournamentId = o.TournamentId,
+                        UserId = o.UserId,
+                        AddOnCount = o.AddOnCount,
+                        DateAdded = o.DateAdded,
+                        DateDeleted = o.DateDeleted,
+                        Points = (decimal)o.Points,
+                        PokerCount = o.PokerCount,
+                        Rank = o.Rank,
+                        ReBuyCount = o.ReBuyCount,
+                        ReEntryCount = o.ReEntryCount.HasValue ? o.ReEntryCount.Value : 0,
+                        RoyalFlushCount = o.RoyalFlushCount,
+                        SpecialAddOnCount = o.SpecialAddOnCount.HasValue ? o.SpecialAddOnCount.Value : 0,
+                        StackBonusSum = 0,
+                        State = o.State.HasValue ? o.State.Value : 0,
+                        StraightFlushCount = o.StraightFlushCount
+                    };
+
+                    try
+                    {
+                        ClubArcada.Common.BusinessObjects.Data.TournamentPlayerData.Save(CR, newPlayer);
+                    }
+                    catch (Exception exp)
+                    {
+                    }
                 }
             }
         }

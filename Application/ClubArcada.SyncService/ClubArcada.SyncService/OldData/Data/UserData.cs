@@ -41,5 +41,13 @@ namespace ClubArcada.SyncService.OldData.Data
                 return tours;
             }
         }
+
+        public static List<TournamentResult> GetTournamentResults()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                return appDC.TournamentResults.ToList();
+            }
+        }
     }
 }
