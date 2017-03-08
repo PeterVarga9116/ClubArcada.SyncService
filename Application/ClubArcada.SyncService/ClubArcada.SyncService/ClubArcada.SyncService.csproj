@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClubArcada.Common, Version=1.0.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ClubArcada.Common.1.0.22\lib\ClubArcada.Common.dll</HintPath>
+      <HintPath>..\packages\ClubArcada.Common.1.0.25\lib\ClubArcada.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

@@ -49,5 +49,13 @@ namespace ClubArcada.SyncService.OldData.Data
                 return appDC.TournamentResults.ToList();
             }
         }
+
+        public static List<Transaction> GetTransactions()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                return appDC.Transactions.ToList();
+            }
+        }
     }
 }

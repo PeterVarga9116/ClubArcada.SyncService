@@ -9,6 +9,7 @@ namespace ClubArcada.SyncService
     {
         private Timer _timer;
         private Timer _timerTournamentResults;
+        private Timer _timerTransactions;
 
         public Service1()
         {
@@ -23,11 +24,33 @@ namespace ClubArcada.SyncService
             _timer.Enabled = true;
 
             _timerTournamentResults = new Timer();
-            _timerTournamentResults.Interval = 300000;
+            _timerTournamentResults.Interval = 60000;
             _timerTournamentResults.Elapsed += _timerTournamentResults_Elapsed; ;
             _timerTournamentResults.Enabled = true;
 
+            _timerTransactions = new Timer();
+            _timerTransactions.Interval = 60000;
+            _timerTransactions.Elapsed += _timerTransactions_Elapsed;
+            _timerTransactions.Enabled = true;
+
             WriteErrorLog("SyncService started");
+        }
+
+        private void _timerTransactions_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                _timerTransactions.Stop();
+                SyncData.SyncData.SyncTransactions();
+            }
+            catch (Exception exp)
+            {
+                WriteErrorLog(exp.GetBaseException().ToString());
+            }
+            finally
+            {
+                _timerTransactions.Start();
+            }
         }
 
         private void _timerTournamentResults_Elapsed(object sender, ElapsedEventArgs e)

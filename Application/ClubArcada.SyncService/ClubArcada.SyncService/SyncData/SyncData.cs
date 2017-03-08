@@ -14,38 +14,29 @@ namespace ClubArcada.SyncService.SyncData
 
         public static void SyncUsers()
         {
-            try
+            var oldUsers = OldData.Data.UserData.GetList();
+
+            var newUsers = Common.BusinessObjects.Data.UserData.GetList(CR);
+
+            foreach (var u in oldUsers)
             {
-                var oldUsers = OldData.Data.UserData.GetList();
-
-                var newUsers = Common.BusinessObjects.Data.UserData.GetList(CR);
-
-                foreach (var u in oldUsers)
+                if (newUsers.Select(x => x.Id).Contains(u.UserId))
                 {
-                    if (newUsers.Select(x => x.Id).Contains(u.UserId))
-                    {
-                        var toUpdate = newUsers.SingleOrDefault(y => y.Id == u.UserId);
+                    var toUpdate = newUsers.SingleOrDefault(y => y.Id == u.UserId);
 
-                        if (toUpdate.FirstName != u.FirstName || toUpdate.LastName != u.LastName || toUpdate.NickName != u.NickName)
-                        {
-                            toUpdate.LastName = u.LastName;
-                            toUpdate.FirstName = u.FirstName;
-                            toUpdate.NickName = u.NickName;
-
-                            Common.BusinessObjects.Data.UserData.Save(CR, toUpdate);
-                        }
-                    }
-                    else
+                    if (toUpdate.FirstName != u.FirstName || toUpdate.LastName != u.LastName || toUpdate.NickName != u.NickName)
                     {
-                        Common.BusinessObjects.Data.UserData.Save(CR, new User() { DateCreated = u.DateCreated, AdminLevel = u.AdminLevel, AutoReturnType = 1, CreatedByUserId = ServiceID, Email = u.Email, FirstName = u.FirstName, Id = u.UserId, IsAdmin = u.IsAdmin, IsBlocked = u.IsBlocked, IsPersonal = u.IsPersonal, IsTestUser = false, IsWallet = u.IsWallet.True(), LastName = u.LastName, NickName = u.NickName, Password = u.Password, PhoneNumber = u.PhoneNumber });
+                        toUpdate.LastName = u.LastName;
+                        toUpdate.FirstName = u.FirstName;
+                        toUpdate.NickName = u.NickName;
+
+                        Common.BusinessObjects.Data.UserData.Save(CR, toUpdate);
                     }
                 }
-            }
-            catch (Exception exp)
-            {
-            }
-            finally
-            {
+                else
+                {
+                    Common.BusinessObjects.Data.UserData.Save(CR, new User() { DateCreated = u.DateCreated, AdminLevel = u.AdminLevel, AutoReturnType = 1, CreatedByUserId = ServiceID, Email = u.Email, FirstName = u.FirstName, Id = u.UserId, IsAdmin = u.IsAdmin, IsBlocked = u.IsBlocked, IsPersonal = u.IsPersonal, IsTestUser = false, IsWallet = u.IsWallet.True(), LastName = u.LastName, NickName = u.NickName, Password = u.Password, PhoneNumber = u.PhoneNumber });
+                }
             }
         }
 
@@ -194,6 +185,41 @@ namespace ClubArcada.SyncService.SyncData
                     catch (Exception exp)
                     {
                     }
+                }
+            }
+        }
+
+        public static void SyncTransactions()
+        {
+            var oldItems = OldData.Data.UserData.GetTransactions();
+            var newItems = Common.BusinessObjects.Data.TransactionsData.GetList(CR);
+
+            foreach (var i in oldItems)
+            {
+                if (newItems.Select(n => n.Id).Contains(i.TransactionId))
+                {
+                }
+                else
+                {
+                    var newT = new Common.BusinessObjects.DataClasses.Transaction()
+                    {
+                        Amount = (decimal)i.Amount,
+                        Amount2 = i.Amount2.HasValue ? (decimal)i.Amount2.Value : 0,
+                        AttachedTransactionId = i.AttachedTransactionId,
+                        CreatedByApp = i.CratedByApplication.HasValue ? i.CratedByApplication.Value : (int)eApplication.SyncService,
+                        CreatedByUserId = i.CratedByUserId,
+                        DateAddedToDB = i.DateAddedToDB.HasValue ? i.DateAddedToDB.Value : DateTime.Now,
+                        DateCreated = i.DateCreated,
+                        DateDeleted = i.DateDeleted,
+                        DatePayed = i.DatePayed,
+                        DateUsed = i.DateUsed,
+                        Description = i.Description == null ? string.Empty : i.Description,
+                        Id = i.TransactionId,
+                        TransactionType = i.TransactionType,
+                        UserId = i.UserId
+                    };
+
+                    ClubArcada.Common.BusinessObjects.Data.TransactionsData.Create(CR, newT);
                 }
             }
         }
