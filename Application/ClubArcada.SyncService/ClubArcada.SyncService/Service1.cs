@@ -2,12 +2,14 @@
 using System.IO;
 using System.ServiceProcess;
 using System.Timers;
+using ClubArcada.Common;
 
 namespace ClubArcada.SyncService
 {
     public partial class Service1 : ServiceBase
     {
-        private Timer _timer;
+        private Timer _timerSyncUsers;
+        private Timer _timerSyncRequests;
         private Timer _timerTournamentResults;
         private Timer _timerTransactions;
 
@@ -18,22 +20,48 @@ namespace ClubArcada.SyncService
 
         protected override void OnStart(string[] args)
         {
-            _timer = new Timer();
-            _timer.Interval = 60000;
-            _timer.Elapsed += _timer_Elapsed;
-            _timer.Enabled = true;
+            _timerSyncUsers = new Timer();
+            _timerSyncUsers.Interval = 600000;
+            _timerSyncUsers.Elapsed += _timerSyncUsers_Elapsed;
+            _timerSyncUsers.Enabled = true;
+            _timerSyncUsers.Start();
+
+            _timerSyncRequests = new Timer();
+            _timerSyncRequests.Interval = 300000;
+            _timerSyncRequests.Elapsed += _timerSyncRequests_Elapsed; ;
+            _timerSyncRequests.Enabled = true;
+            _timerSyncRequests.Start();
 
             _timerTournamentResults = new Timer();
             _timerTournamentResults.Interval = 60000;
             _timerTournamentResults.Elapsed += _timerTournamentResults_Elapsed; ;
             _timerTournamentResults.Enabled = true;
+            _timerTournamentResults.Start();
 
             _timerTransactions = new Timer();
-            _timerTransactions.Interval = 60000;
+            _timerTransactions.Interval = 600000;
             _timerTransactions.Elapsed += _timerTransactions_Elapsed;
             _timerTransactions.Enabled = true;
+            _timerTransactions.Start();
 
             WriteErrorLog("SyncService started");
+        }
+
+        private void _timerSyncRequests_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                _timerSyncRequests.Stop();
+                SyncData.SyncData.SyncRequests();
+            }
+            catch (Exception exp)
+            {
+                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Requests", exp.GetExceptionDetails());
+            }
+            finally
+            {
+                _timerSyncRequests.Start();
+            }
         }
 
         private void _timerTransactions_Elapsed(object sender, ElapsedEventArgs e)
@@ -45,7 +73,7 @@ namespace ClubArcada.SyncService
             }
             catch (Exception exp)
             {
-                WriteErrorLog(exp.GetBaseException().ToString());
+                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Transactions", exp.GetExceptionDetails());
             }
             finally
             {
@@ -63,7 +91,7 @@ namespace ClubArcada.SyncService
             }
             catch (Exception exp)
             {
-                WriteErrorLog(exp.GetBaseException().ToString());
+                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Tournaments", exp.GetExceptionDetails());
             }
             finally
             {
@@ -71,21 +99,20 @@ namespace ClubArcada.SyncService
             }
         }
 
-        private void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void _timerSyncUsers_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
-                _timer.Stop();
+                _timerSyncUsers.Stop();
                 SyncData.SyncData.SyncUsers();
-                SyncData.SyncData.SyncRequests();
             }
             catch (Exception exp)
             {
-                WriteErrorLog(exp.GetBaseException().ToString());
+                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Users", exp.GetExceptionDetails());
             }
             finally
             {
-                _timer.Start();
+                _timerSyncUsers.Start();
             }
         }
 
@@ -101,5 +128,7 @@ namespace ClubArcada.SyncService
             sw.Flush();
             sw.Close();
         }
+
+
     }
 }

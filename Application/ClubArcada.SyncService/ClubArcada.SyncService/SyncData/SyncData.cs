@@ -24,11 +24,14 @@ namespace ClubArcada.SyncService.SyncData
                 {
                     var toUpdate = newUsers.SingleOrDefault(y => y.Id == u.UserId);
 
-                    if (toUpdate.FirstName != u.FirstName || toUpdate.LastName != u.LastName || toUpdate.NickName != u.NickName)
+                    if (toUpdate.FirstName != u.FirstName || toUpdate.LastName != u.LastName || toUpdate.NickName != u.NickName || toUpdate.Email != u.Email || toUpdate.AdminLevel != u.AdminLevel)
                     {
                         toUpdate.LastName = u.LastName;
                         toUpdate.FirstName = u.FirstName;
                         toUpdate.NickName = u.NickName;
+                        toUpdate.AdminLevel = u.AdminLevel;
+                        toUpdate.Email = u.Email;
+                        toUpdate.Password = u.Password;
 
                         Common.BusinessObjects.Data.UserData.Save(CR, toUpdate);
                     }
@@ -58,14 +61,14 @@ namespace ClubArcada.SyncService.SyncData
                 }
                 else
                 {
-                    Common.BusinessObjects.Data.RequestData.Create(CR, new Request() { AssignedTo = r.AssignedTo, DateCompleted = r.DateCompleted, DateCreated = r.DateCreated, DateDeleted = r.DateDeleted, Description = r.Description, Id = r.RequestId, UserId = r.UserId, Status = r.Status });
+                    Common.BusinessObjects.Data.RequestData.Save(CR, new Request() { AssignedTo = r.AssignedTo, DateCompleted = r.DateCompleted, DateCreated = r.DateCreated, DateDeleted = r.DateDeleted, Description = r.Description, Id = r.RequestId, CreatedByUserId = r.UserId, Status = r.Status });
                 }
             }
         }
 
         public static void SynTournaments()
         {
-            var oldTours = OldData.Data.UserData.GetTournaments().Where(t => t.Date.Year == 2016 && t.Date.Month > 9).ToList();
+            var oldTours = OldData.Data.UserData.GetTournaments().Where(t => t.Date.Year == 2017).ToList();
 
             var filtered = oldTours.Where(t => !t.DateDeleted.HasValue && t.Detail.IsNotNull()).ToList();
             var newTours = Common.BusinessObjects.Data.TournamentData.GetList(CR);
@@ -75,6 +78,10 @@ namespace ClubArcada.SyncService.SyncData
                 if (newTours.Select(nt => nt.Id).Contains(u.TournamentId))
                 {
                     var tu = newTours.SingleOrDefault(n => n.Id == u.TournamentId);
+
+                    tu.DateDeleted = u.DateDeleted;
+                    tu.DateEnded = u.DateEnded;
+                    tu.ReEntryCount = u.Detail.ReEntryCount;
 
                     if (tu.IsRunning != u.IsRunning)
                     {
@@ -118,6 +125,7 @@ namespace ClubArcada.SyncService.SyncData
                         AddOnPrize = u.Detail.AddOnPrize,
                         AddOnStack = u.Detail.AddOnStack,
                         BonusStack = u.Detail.BonusStack,
+                        ReEntryCount = u.Detail.ReEntryCount,
                     };
 
                     ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, newReq);
@@ -127,7 +135,7 @@ namespace ClubArcada.SyncService.SyncData
 
         public static void SncTournamentResulst()
         {
-            var oldList = OldData.Data.UserData.GetTournamentResults().Where(p => p.DateAdded > DateTime.Now.AddMonths(-4)).ToList();
+            var oldList = OldData.Data.UserData.GetTournamentResults().Where(p => p.DateAdded > DateTime.Now.AddMonths(-1)).ToList();
 
             var newList = Common.BusinessObjects.Data.TournamentPlayerData.GetList(CR);
 
@@ -164,7 +172,7 @@ namespace ClubArcada.SyncService.SyncData
                         TournamentId = o.TournamentId,
                         UserId = o.UserId,
                         AddOnCount = o.AddOnCount,
-                        DateAdded = o.DateAdded,
+                        DateCreated = o.DateAdded,
                         DateDeleted = o.DateDeleted,
                         Points = (decimal)o.Points,
                         PokerCount = o.PokerCount,
@@ -178,21 +186,15 @@ namespace ClubArcada.SyncService.SyncData
                         StraightFlushCount = o.StraightFlushCount
                     };
 
-                    try
-                    {
-                        ClubArcada.Common.BusinessObjects.Data.TournamentPlayerData.Save(CR, newPlayer);
-                    }
-                    catch (Exception exp)
-                    {
-                    }
+                    ClubArcada.Common.BusinessObjects.Data.TournamentPlayerData.Save(CR, newPlayer);
                 }
             }
         }
 
         public static void SyncTransactions()
         {
-            var oldItems = OldData.Data.UserData.GetTransactions();
-            var newItems = Common.BusinessObjects.Data.TransactionsData.GetList(CR);
+            var oldItems = OldData.Data.UserData.GetTransactions().Where(t => t.DateAddedToDB > DateTime.Now.AddDays(-10)).ToList();
+            var newItems = Common.BusinessObjects.Data.TransactionData.GetList(CR);
 
             foreach (var i in oldItems)
             {
@@ -219,9 +221,27 @@ namespace ClubArcada.SyncService.SyncData
                         UserId = i.UserId
                     };
 
-                    ClubArcada.Common.BusinessObjects.Data.TransactionsData.Create(CR, newT);
+                    ClubArcada.Common.BusinessObjects.Data.TransactionData.Save(CR, newT);
                 }
             }
+        }
+
+        public static void SendErrorMail(string subject, string message)
+        {
+            var o = new Common.Mailer.MailObject()
+            {
+                Subject = subject,
+                Body = message,
+                To = "petervarga@arcade-group.sk".CreateList(),
+                CC = new System.Collections.Generic.List<string>(),
+                From = "service@arcade-group.sk",
+                Password = "vape6931",
+                SmtpClient = "smtp.websupport.sk",
+                Port = 25,
+                UserName = "service@arcade-group.sk"
+            };
+
+            ClubArcada.Common.Mailer.Mailer.SendMail(o);
         }
     }
 

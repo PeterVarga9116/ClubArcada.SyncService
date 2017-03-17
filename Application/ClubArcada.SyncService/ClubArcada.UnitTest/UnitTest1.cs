@@ -9,7 +9,15 @@ namespace ClubArcada.UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-            SyncService.SyncData.SyncData.SyncTransactions();
+            try
+            {
+                SyncService.SyncData.SyncData.SyncUsers();
+            }
+            catch (Exception exp)
+            {
+                
+            }
+
         }
     }
 }
