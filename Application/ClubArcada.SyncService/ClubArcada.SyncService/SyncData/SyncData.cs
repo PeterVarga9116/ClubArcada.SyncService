@@ -14,7 +14,7 @@ namespace ClubArcada.SyncService.SyncData
 
         public static void SyncUsers()
         {
-            var oldUsers = OldData.Data.UserData.GetList();
+            var oldUsers = OldData.Data.OldDbData.GetList();
 
             var newUsers = Common.BusinessObjects.Data.UserData.GetList(CR);
 
@@ -45,7 +45,7 @@ namespace ClubArcada.SyncService.SyncData
 
         public static void SyncRequests()
         {
-            var oldList = OldData.Data.UserData.GetRequestList();
+            var oldList = OldData.Data.OldDbData.GetRequestList();
             var newList = Common.BusinessObjects.Data.RequestData.GetList(CR);
 
             foreach (var r in oldList)
@@ -66,9 +66,35 @@ namespace ClubArcada.SyncService.SyncData
             }
         }
 
+        public static void SyncLeagues()
+        {
+            var oldList = OldData.Data.OldDbData.GetLeagues();
+            var newList = Common.BusinessObjects.Data.LeagueData.GetList(CR);
+
+            foreach (var r in oldList)
+            {
+                if (newList.Select(x => x.Id).Contains(r.LeagueId))
+                {
+                    //var toUpdate = newList.SingleOrDefault(y => y.Id == r.LeagueId);
+                }
+                else
+                {
+                    Common.BusinessObjects.Data.LeagueData.Save(CR, new League()
+                    {
+                        Id = r.LeagueId,
+                        CreatedByUserId = CR.UserId,
+                        DateCreated = DateTime.Now,
+                        IsActive = r.IsActive,
+                        DateDeleted = null,
+                        Name = r.Name
+                    });
+                }
+            }
+        }
+
         public static void SynTournaments()
         {
-            var oldTours = OldData.Data.UserData.GetTournaments().Where(t => t.Date.Year == 2017).ToList();
+            var oldTours = OldData.Data.OldDbData.GetTournaments().ToList();
 
             var filtered = oldTours.Where(t => !t.DateDeleted.HasValue && t.Detail.IsNotNull()).ToList();
             var newTours = Common.BusinessObjects.Data.TournamentData.GetList(CR);
@@ -133,9 +159,46 @@ namespace ClubArcada.SyncService.SyncData
             }
         }
 
+        public static void SyncTournamentCashouts()
+        {
+            var oldList = OldData.Data.OldDbData.GetTournamentCashouts();
+            var newList = Common.BusinessObjects.Data.TournamentCashoutData.GetList(CR);
+
+            foreach (var r in oldList)
+            {
+                if (newList.Select(x => x.Id).Contains(r.TournamentCashoutId))
+                {
+                    //var toUpdate = newList.SingleOrDefault(y => y.Id == r.TournamentCashoutId);
+                }
+                else
+                {
+                    Common.BusinessObjects.Data.TournamentCashoutData.Save(CR, new TournamentCashout()
+                    {
+                        Id = r.TournamentCashoutId,
+                        TournamentId = r.TournamentId,
+                        CreatedByUserId = CR.UserId,
+                        Tips = r.Tips.HasValue ? r.Tips.Value : 0,
+                        Comment = r.Comment,
+                        Dotation = (decimal)r.Dotation,
+                        APCBank = (decimal)r.APCBank,
+                        CGBank = (decimal)r.CGBank,
+                        DateCreated = DateTime.Now,
+                        DateDeleted = null,
+                        Dealer = r.Dealer.HasValue ? (decimal)r.Dealer.Value : 0,
+                        Floor = (decimal)r.Floor,
+                        Food = (decimal)r.Food,
+                        Prizepool = (decimal)r.PrizePool,
+                        Rake = (decimal)r.Rake,
+                        RunnerHelp = r.RunnerHelp.HasValue ? (decimal)r.RunnerHelp.Value : 0,
+                        Places = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}", r.Place_01, r.Place_02, r.Place_03, r.Place_04, r.Place_05, r.Place_06, r.Place_07, r.Place_08, r.Place_09, r.Place_10)
+                    });
+                }
+            }
+        }
+
         public static void SncTournamentResulst()
         {
-            var oldList = OldData.Data.UserData.GetTournamentResults().Where(p => p.DateAdded > DateTime.Now.AddMonths(-1)).ToList();
+            var oldList = OldData.Data.OldDbData.GetTournamentResults().Where(p => p.DateAdded > DateTime.Now.AddMonths(-1)).ToList();
 
             var newList = Common.BusinessObjects.Data.TournamentPlayerData.GetList(CR);
 
@@ -193,7 +256,7 @@ namespace ClubArcada.SyncService.SyncData
 
         public static void SyncTransactions()
         {
-            var oldItems = OldData.Data.UserData.GetTransactions().Where(t => t.DateAddedToDB > DateTime.Now.AddDays(-10)).ToList();
+            var oldItems = OldData.Data.OldDbData.GetTransactions().Where(t => t.DateAddedToDB > DateTime.Now.AddDays(-10)).ToList();
             var newItems = Common.BusinessObjects.Data.TransactionData.GetList(CR);
 
             foreach (var i in oldItems)

@@ -11,11 +11,11 @@ namespace ClubArcada.UnitTest
         {
             try
             {
-                SyncService.SyncData.SyncData.SyncUsers();
+                SyncService.SyncData.SyncData.SyncTournamentCashouts();
             }
             catch (Exception exp)
             {
-                
+
             }
 
         }

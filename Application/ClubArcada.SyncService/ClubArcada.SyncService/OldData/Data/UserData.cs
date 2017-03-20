@@ -7,7 +7,7 @@ using ClubArcada.SyncService.OldData.DataClasses;
 
 namespace ClubArcada.SyncService.OldData.Data
 {
-    public class UserData
+    public class OldDbData
     {
         public static string CS = "Data Source=82.119.117.77;Initial Catalog=PokerSystem;Integrated Security=False;User Id=PokerTimer;Password=Poker1969;MultipleActiveResultSets=True";
 
@@ -39,6 +39,26 @@ namespace ClubArcada.SyncService.OldData.Data
                 }
 
                 return tours;
+            }
+        }
+
+        public static List<TournamentCashout> GetTournamentCashouts()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                var cashouts = appDC.TournamentCashouts.ToList();
+
+                return cashouts;
+            }
+        }
+
+        public static List<League> GetLeagues()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                var items = appDC.Leagues.ToList();
+
+                return items;
             }
         }
 
