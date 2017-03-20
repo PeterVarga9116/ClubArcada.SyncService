@@ -92,7 +92,7 @@ namespace ClubArcada.SyncService.SyncData
             }
         }
 
-        public static void SynTournaments()
+        public static void SyncTournaments()
         {
             var oldTours = OldData.Data.OldDbData.GetTournaments().ToList();
 
@@ -108,17 +108,18 @@ namespace ClubArcada.SyncService.SyncData
                     tu.DateDeleted = u.DateDeleted;
                     tu.DateEnded = u.DateEnded;
                     tu.ReEntryCount = u.Detail.ReEntryCount;
+                    tu.Name = u.Name;
 
                     if (tu.IsRunning != u.IsRunning)
                     {
                         tu.IsRunning = u.IsRunning.True();
-
-                        ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, tu);
                     }
+
+                    ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, tu);
                 }
                 else
                 {
-                    var newReq = new Tournament()
+                    var newTournament = new Tournament()
                     {
                         Id = u.TournamentId,
                         Date = u.Date,
@@ -154,7 +155,7 @@ namespace ClubArcada.SyncService.SyncData
                         ReEntryCount = u.Detail.ReEntryCount,
                     };
 
-                    ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, newReq);
+                    ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, newTournament);
                 }
             }
         }

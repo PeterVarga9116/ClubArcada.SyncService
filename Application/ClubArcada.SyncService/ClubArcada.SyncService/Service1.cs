@@ -146,7 +146,7 @@ namespace ClubArcada.SyncService
             try
             {
                 _timerTournamentResults.Stop();
-                SyncData.SyncData.SynTournaments();
+                SyncData.SyncData.SyncTournaments();
                 SyncData.SyncData.SncTournamentResulst();
             }
             catch (Exception exp)
