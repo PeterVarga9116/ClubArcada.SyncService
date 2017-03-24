@@ -117,6 +117,12 @@ namespace ClubArcada.SyncService.OldData.DataClasses
     partial void InsertUserSetting(UserSetting instance);
     partial void UpdateUserSetting(UserSetting instance);
     partial void DeleteUserSetting(UserSetting instance);
+    partial void InsertTicketItem(TicketItem instance);
+    partial void UpdateTicketItem(TicketItem instance);
+    partial void DeleteTicketItem(TicketItem instance);
+    partial void InsertTicket(Ticket instance);
+    partial void UpdateTicket(Ticket instance);
+    partial void DeleteTicket(Ticket instance);
     #endregion
 		
 		public ODBDataContext() : 
@@ -378,6 +384,22 @@ namespace ClubArcada.SyncService.OldData.DataClasses
 			get
 			{
 				return this.GetTable<UserSetting>();
+			}
+		}
+		
+		public System.Data.Linq.Table<TicketItem> TicketItems
+		{
+			get
+			{
+				return this.GetTable<TicketItem>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Ticket> Tickets
+		{
+			get
+			{
+				return this.GetTable<Ticket>();
 			}
 		}
 	}
@@ -8341,6 +8363,370 @@ namespace ClubArcada.SyncService.OldData.DataClasses
 					this._ApcCashUpdateDateTime = value;
 					this.SendPropertyChanged("ApcCashUpdateDateTime");
 					this.OnApcCashUpdateDateTimeChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.TicketItem")]
+	public partial class TicketItem : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _TicketId;
+		
+		private int _Type;
+		
+		private string _Name;
+		
+		private decimal _Amount;
+		
+		private int _Stack;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnTicketIdChanging(System.Guid value);
+    partial void OnTicketIdChanged();
+    partial void OnTypeChanging(int value);
+    partial void OnTypeChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnAmountChanging(decimal value);
+    partial void OnAmountChanged();
+    partial void OnStackChanging(int value);
+    partial void OnStackChanged();
+    #endregion
+		
+		public TicketItem()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TicketId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid TicketId
+		{
+			get
+			{
+				return this._TicketId;
+			}
+			set
+			{
+				if ((this._TicketId != value))
+				{
+					this.OnTicketIdChanging(value);
+					this.SendPropertyChanging();
+					this._TicketId = value;
+					this.SendPropertyChanged("TicketId");
+					this.OnTicketIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="Int NOT NULL")]
+		public int Type
+		{
+			get
+			{
+				return this._Type;
+			}
+			set
+			{
+				if ((this._Type != value))
+				{
+					this.OnTypeChanging(value);
+					this.SendPropertyChanging();
+					this._Type = value;
+					this.SendPropertyChanged("Type");
+					this.OnTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Amount", DbType="Decimal(18,2) NOT NULL")]
+		public decimal Amount
+		{
+			get
+			{
+				return this._Amount;
+			}
+			set
+			{
+				if ((this._Amount != value))
+				{
+					this.OnAmountChanging(value);
+					this.SendPropertyChanging();
+					this._Amount = value;
+					this.SendPropertyChanged("Amount");
+					this.OnAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Stack", DbType="Int NOT NULL")]
+		public int Stack
+		{
+			get
+			{
+				return this._Stack;
+			}
+			set
+			{
+				if ((this._Stack != value))
+				{
+					this.OnStackChanging(value);
+					this.SendPropertyChanging();
+					this._Stack = value;
+					this.SendPropertyChanged("Stack");
+					this.OnStackChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Tickets")]
+	public partial class Ticket : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _UserId;
+		
+		private System.Guid _CreatedByUserId;
+		
+		private System.Guid _TournamentId;
+		
+		private System.DateTime _DateCreated;
+		
+		private int _Identification;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnUserIdChanging(System.Guid value);
+    partial void OnUserIdChanged();
+    partial void OnCreatedByUserIdChanging(System.Guid value);
+    partial void OnCreatedByUserIdChanged();
+    partial void OnTournamentIdChanging(System.Guid value);
+    partial void OnTournamentIdChanged();
+    partial void OnDateCreatedChanging(System.DateTime value);
+    partial void OnDateCreatedChanged();
+    partial void OnIdentificationChanging(int value);
+    partial void OnIdentificationChanged();
+    #endregion
+		
+		public Ticket()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedByUserId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid CreatedByUserId
+		{
+			get
+			{
+				return this._CreatedByUserId;
+			}
+			set
+			{
+				if ((this._CreatedByUserId != value))
+				{
+					this.OnCreatedByUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedByUserId = value;
+					this.SendPropertyChanged("CreatedByUserId");
+					this.OnCreatedByUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TournamentId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid TournamentId
+		{
+			get
+			{
+				return this._TournamentId;
+			}
+			set
+			{
+				if ((this._TournamentId != value))
+				{
+					this.OnTournamentIdChanging(value);
+					this.SendPropertyChanging();
+					this._TournamentId = value;
+					this.SendPropertyChanged("TournamentId");
+					this.OnTournamentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateCreated", DbType="DateTime NOT NULL")]
+		public System.DateTime DateCreated
+		{
+			get
+			{
+				return this._DateCreated;
+			}
+			set
+			{
+				if ((this._DateCreated != value))
+				{
+					this.OnDateCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._DateCreated = value;
+					this.SendPropertyChanged("DateCreated");
+					this.OnDateCreatedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Identification", DbType="Int NOT NULL")]
+		public int Identification
+		{
+			get
+			{
+				return this._Identification;
+			}
+			set
+			{
+				if ((this._Identification != value))
+				{
+					this.OnIdentificationChanging(value);
+					this.SendPropertyChanging();
+					this._Identification = value;
+					this.SendPropertyChanged("Identification");
+					this.OnIdentificationChanged();
 				}
 			}
 		}

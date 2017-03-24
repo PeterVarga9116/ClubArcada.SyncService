@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using ClubArcada.Common;
+﻿using ClubArcada.Common;
 using ClubArcada.Common.BusinessObjects.DataClasses;
+using System;
+using System.Linq;
 
 namespace ClubArcada.SyncService.SyncData
 {
@@ -92,12 +92,12 @@ namespace ClubArcada.SyncService.SyncData
             }
         }
 
-        public static void SynTournaments()
+        public static void SyncTournaments()
         {
             var oldTours = OldData.Data.OldDbData.GetTournaments().ToList();
 
-            var filtered = oldTours.Where(t => !t.DateDeleted.HasValue && t.Detail.IsNotNull()).ToList();
-            var newTours = Common.BusinessObjects.Data.TournamentData.GetList(CR);
+            var filtered = oldTours.Where(t => t.Detail.IsNotNull()).ToList();
+            var newTours = Common.BusinessObjects.Data.TournamentData.GetList(CR, false, false);
 
             foreach (var u in filtered)
             {
@@ -108,17 +108,18 @@ namespace ClubArcada.SyncService.SyncData
                     tu.DateDeleted = u.DateDeleted;
                     tu.DateEnded = u.DateEnded;
                     tu.ReEntryCount = u.Detail.ReEntryCount;
+                    tu.Name = u.Name;
 
                     if (tu.IsRunning != u.IsRunning)
                     {
                         tu.IsRunning = u.IsRunning.True();
-
-                        ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, tu);
                     }
+
+                    ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, tu);
                 }
                 else
                 {
-                    var newReq = new Tournament()
+                    var newTournament = new Tournament()
                     {
                         Id = u.TournamentId,
                         Date = u.Date,
@@ -154,7 +155,7 @@ namespace ClubArcada.SyncService.SyncData
                         ReEntryCount = u.Detail.ReEntryCount,
                     };
 
-                    ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, newReq);
+                    ClubArcada.Common.BusinessObjects.Data.TournamentData.Save(CR, newTournament);
                 }
             }
         }
@@ -172,33 +173,36 @@ namespace ClubArcada.SyncService.SyncData
                 }
                 else
                 {
-                    Common.BusinessObjects.Data.TournamentCashoutData.Save(CR, new TournamentCashout()
+                    if (Common.BusinessObjects.Data.TournamentData.GetById(CR, r.TournamentId).IsNotNull())
                     {
-                        Id = r.TournamentCashoutId,
-                        TournamentId = r.TournamentId,
-                        CreatedByUserId = CR.UserId,
-                        Tips = r.Tips.HasValue ? r.Tips.Value : 0,
-                        Comment = r.Comment,
-                        Dotation = (decimal)r.Dotation,
-                        APCBank = (decimal)r.APCBank,
-                        CGBank = (decimal)r.CGBank,
-                        DateCreated = DateTime.Now,
-                        DateDeleted = null,
-                        Dealer = r.Dealer.HasValue ? (decimal)r.Dealer.Value : 0,
-                        Floor = (decimal)r.Floor,
-                        Food = (decimal)r.Food,
-                        Prizepool = (decimal)r.PrizePool,
-                        Rake = (decimal)r.Rake,
-                        RunnerHelp = r.RunnerHelp.HasValue ? (decimal)r.RunnerHelp.Value : 0,
-                        Places = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}", r.Place_01, r.Place_02, r.Place_03, r.Place_04, r.Place_05, r.Place_06, r.Place_07, r.Place_08, r.Place_09, r.Place_10)
-                    });
+                        Common.BusinessObjects.Data.TournamentCashoutData.Save(CR, new TournamentCashout()
+                        {
+                            Id = r.TournamentCashoutId,
+                            TournamentId = r.TournamentId,
+                            CreatedByUserId = CR.UserId,
+                            Tips = r.Tips.HasValue ? r.Tips.Value : 0,
+                            Comment = r.Comment,
+                            Dotation = (decimal)r.Dotation,
+                            APCBank = (decimal)r.APCBank,
+                            CGBank = (decimal)r.CGBank,
+                            DateCreated = DateTime.Now,
+                            DateDeleted = null,
+                            Dealer = r.Dealer.HasValue ? (decimal)r.Dealer.Value : 0,
+                            Floor = (decimal)r.Floor,
+                            Food = (decimal)r.Food,
+                            Prizepool = (decimal)r.PrizePool,
+                            Rake = (decimal)r.Rake,
+                            RunnerHelp = r.RunnerHelp.HasValue ? (decimal)r.RunnerHelp.Value : 0,
+                            Places = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}", r.Place_01, r.Place_02, r.Place_03, r.Place_04, r.Place_05, r.Place_06, r.Place_07, r.Place_08, r.Place_09, r.Place_10)
+                        });
+                    }
                 }
             }
         }
 
         public static void SncTournamentResulst()
         {
-            var oldList = OldData.Data.OldDbData.GetTournamentResults().Where(p => p.DateAdded > DateTime.Now.AddMonths(-1)).ToList();
+            var oldList = OldData.Data.OldDbData.GetTournamentResults().Where(p => p.DateAdded > DateTime.Now.AddMonths(-5)).ToList();
 
             var newList = Common.BusinessObjects.Data.TournamentPlayerData.GetList(CR);
 
@@ -256,7 +260,7 @@ namespace ClubArcada.SyncService.SyncData
 
         public static void SyncTransactions()
         {
-            var oldItems = OldData.Data.OldDbData.GetTransactions().Where(t => t.DateAddedToDB > DateTime.Now.AddDays(-10)).ToList();
+            var oldItems = OldData.Data.OldDbData.GetTransactions().ToList();
             var newItems = Common.BusinessObjects.Data.TransactionData.GetList(CR);
 
             foreach (var i in oldItems)
@@ -285,6 +289,210 @@ namespace ClubArcada.SyncService.SyncData
                     };
 
                     ClubArcada.Common.BusinessObjects.Data.TransactionData.Save(CR, newT);
+                }
+            }
+        }
+
+        public static void SyncStructures()
+        {
+            var oldItems = OldData.Data.OldDbData.GetStructures();
+            var newItems = Common.BusinessObjects.Data.StructureData.GetList(CR);
+
+            foreach (var r in oldItems)
+            {
+                if (newItems.Select(x => x.Id).Contains(r.StructureId))
+                {
+                    var toUpdate = newItems.SingleOrDefault(y => y.Id == r.StructureId);
+
+                    toUpdate.Name = r.Name;
+                    Common.BusinessObjects.Data.StructureData.Save(CR, toUpdate);
+                }
+                else
+                {
+                    Common.BusinessObjects.Data.StructureData.Save(CR, new Structure()
+                    {
+                        Id = r.StructureId,
+                        Name = r.Name,
+                        DateDeleted = r.DateDeleted,
+                        DateCreated = r.DateCreated,
+                    });
+                }
+            }
+        }
+
+        public static void SyncStructureDetails()
+        {
+            var oldItems = OldData.Data.OldDbData.GetStructureDetails();
+            var newItems = Common.BusinessObjects.Data.StructureDetailData.GetList(CR);
+            var structures = Common.BusinessObjects.Data.StructureData.GetList(CR);
+
+            foreach (var r in oldItems)
+            {
+                if (structures.Select(s => s.Id).Contains(r.StructureId))
+                {
+                    if (newItems.Select(x => x.Id).Contains(r.StructureDetailId))
+                    {
+                        var toUpdate = newItems.SingleOrDefault(y => y.Id == r.StructureDetailId);
+
+                        toUpdate.Ante = r.Ante;
+                        toUpdate.BB = r.BigBlind;
+                        toUpdate.Level = r.Level;
+                        toUpdate.Number = r.Number;
+                        toUpdate.SB = r.SmallBlind;
+                        toUpdate.StructureId = r.StructureId;
+                        toUpdate.Time = r.Time;
+                        toUpdate.Type = r.Type;
+
+                        Common.BusinessObjects.Data.StructureDetailData.Save(CR, toUpdate);
+                    }
+                    else
+                    {
+                        var newStructureDetail = new StructureDetail()
+                        {
+                            Id = r.StructureDetailId,
+                            Ante = r.Ante,
+                            BB = r.BigBlind,
+                            Level = r.Level,
+                            Number = r.Number,
+                            SB = r.SmallBlind,
+                            StructureId = r.StructureId,
+                            Time = r.Time,
+                            Type = r.Type
+                        };
+
+                        Common.BusinessObjects.Data.StructureDetailData.Save(CR, newStructureDetail);
+                    }
+                }
+            }
+        }
+
+        public static void SyncTickets()
+        {
+            var oldList = OldData.Data.OldDbData.GetTickets();
+            var newList = Common.BusinessObjects.Data.TicketData.GetList(CR);
+
+            foreach (var r in oldList)
+            {
+                if (newList.Select(x => x.Id).Contains(r.Id))
+                {
+                }
+                else
+                {
+                    Common.BusinessObjects.Data.TicketData.Save(CR, new Ticket()
+                    {
+                        Id = r.Id,
+                        TournamentId = r.TournamentId,
+                        DateCreated = r.DateCreated,
+                        UserId = r.UserId,
+                        CreatedByUserId = r.CreatedByUserId,
+                        Identification = r.Identification,
+                        DateDeleted = null
+                    });
+                }
+            }
+        }
+
+        public static void SyncTicketItems()
+        {
+            var oldList = OldData.Data.OldDbData.GetTicketItems();
+            var newList = Common.BusinessObjects.Data.TicketItemData.GetList(CR);
+
+            foreach (var r in oldList)
+            {
+                if (newList.Select(x => x.Id).Contains(r.Id))
+                {
+                }
+                else
+                {
+                    Common.BusinessObjects.Data.TicketItemData.Save(CR, new TicketItem()
+                    {
+                        Id = r.Id,
+                        Amount = r.Amount,
+                        Name = r.Name,
+                        Stack = r.Stack,
+                        TicketId = r.TicketId,
+                        Type = r.Type,
+                    });
+                }
+            }
+        }
+
+        public static void SyncCashStates()
+        {
+            var oldList = OldData.Data.OldDbData.GetCashStates();
+            var newList = Common.BusinessObjects.Data.CashStateData.GetList(CR, false, false);
+
+            foreach (var r in oldList)
+            {
+                if (newList.Select(x => x.Id).Contains(r.Id))
+                {
+                    var toUpdate = newList.SingleOrDefault(y => y.Id == r.Id);
+
+                    toUpdate.ModifiedByUserId = r.ModifiedByUserId;
+                    toUpdate.Jackpot = r.Jackpot;
+                    toUpdate.Rake = r.Rake;
+                    toUpdate.State = r.State;
+
+                    Common.BusinessObjects.Data.CashStateData.Save(CR, toUpdate);
+
+                }
+                else
+                {
+                    Common.BusinessObjects.Data.CashStateData.Save(CR, new CashState()
+                    {
+                        Id = r.Id,
+                        CreatedByUserId = r.CreatedByUserId,
+                        DateCreated = r.DateCreated,
+                        Input = r.Input,
+                        Jackpot = r.Jackpot,
+                        LastInput = r.LastInput,
+                        ModifiedByUserId = r.ModifiedByUserId,
+                        Rake = r.Rake,
+                        State = r.State,
+                        TournamentId = r.TournamentId,
+                    });
+                }
+            }
+        }
+
+        public static void SyncCashPlayers()
+        {
+            var oldList = OldData.Data.OldDbData.GetCashResults();
+            var newList = Common.BusinessObjects.Data.CashPlayerData.GetList(CR, false, false);
+
+            foreach (var o in oldList)
+            {
+                if (newList.Select(tp => tp.Id).Contains(o.CashResultId))
+                {
+                    //var toUpdate = newList.SingleOrDefault(tp => tp.Id == o.TournamentResultId);
+                    //if (toUpdate.State != o.State || toUpdate.DateDeleted != o.DateDeleted || toUpdate.ReEntryCount != o.ReEntryCount || toUpdate.ReBuyCount != o.ReBuyCount || toUpdate.AddOnCount != o.AddOnCount || toUpdate.PokerCount != o.PokerCount || toUpdate.StraightFlushCount != o.StraightFlushCount || toUpdate.RoyalFlushCount != o.RoyalFlushCount || toUpdate.SpecialAddOnCount != o.SpecialAddOnCount || toUpdate.Points != (decimal)o.Points || toUpdate.Rank != o.Rank)
+                    //{
+                    //    toUpdate.State = o.State.HasValue ? o.State.Value : 0;
+
+
+                    //    ClubArcada.Common.BusinessObjects.Data.CashPlayerData.Save(CR, toUpdate);
+                    //}
+                    //else
+                    //{
+                    //}
+                }
+                else
+                {
+                    var newPlayer = new CashPlayer()
+                    {
+                        Id = o.CashResultId,
+                        TournamentId = o.TournamentId,
+                        CashTableId = o.CashTableId.HasValue ? o.CashTableId.Value : Guid.Empty,
+                        DateCreated = o.StartTime.HasValue ? o.StartTime.Value : DateTime.UtcNow,
+                        UserId = o.UserId,
+                        State = o.State.HasValue ? o.State.Value : 0,
+                        StartTime = o.StartTime.HasValue ? o.StartTime.Value : DateTime.UtcNow,
+                        EndTime = o.EndTime.HasValue ? o.EndTime.Value : DateTime.UtcNow,
+                        Points = o.Duration,
+                        Duration = o.Duration,
+                    };
+
+                    ClubArcada.Common.BusinessObjects.Data.CashPlayerData.Save(CR, newPlayer);
                 }
             }
         }
