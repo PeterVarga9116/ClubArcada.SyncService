@@ -77,5 +77,59 @@ namespace ClubArcada.SyncService.OldData.Data
                 return appDC.Transactions.ToList();
             }
         }
+
+        public static List<Structure> GetStructures()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                return appDC.Structures.ToList();
+            }
+        }
+
+        public static List<StructureDetail> GetStructureDetails()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                return appDC.StructureDetails.ToList();
+            }
+        }
+
+        public static List<Ticket> GetTickets()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                var items = appDC.Tickets.ToList();
+
+                return items;
+            }
+        }
+
+        public static List<TicketItem> GetTicketItems()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                var items = appDC.TicketItems.ToList();
+
+                return items;
+            }
+        }
+
+        public static List<CashState> GetCashStates()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                var items = appDC.CashStates.ToList();
+
+                return items;
+            }
+        }
+
+        public static List<CashResult> GetCashResults()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                return appDC.CashResults.ToList();
+            }
+        }
     }
 }
