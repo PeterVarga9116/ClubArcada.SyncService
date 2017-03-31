@@ -202,7 +202,7 @@ namespace ClubArcada.SyncService.SyncData
 
         public static void SncTournamentResulst()
         {
-            var oldList = OldData.Data.OldDbData.GetTournamentResults().Where(p => p.DateAdded > DateTime.Now.AddMonths(-5)).ToList();
+            var oldList = OldData.Data.OldDbData.GetTournamentResults().Where(p => p.DateAdded > DateTime.Now.AddMonths(-10)).ToList();
 
             var newList = Common.BusinessObjects.Data.TournamentPlayerData.GetList(CR);
 
