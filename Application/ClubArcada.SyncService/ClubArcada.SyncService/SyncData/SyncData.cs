@@ -489,7 +489,6 @@ namespace ClubArcada.SyncService.SyncData
                         StartTime = o.StartTime.HasValue ? o.StartTime.Value : DateTime.UtcNow,
                         EndTime = o.EndTime.HasValue ? o.EndTime.Value : DateTime.UtcNow,
                         Points = o.Duration,
-                        Duration = o.Duration,
                     };
 
                     ClubArcada.Common.BusinessObjects.Data.CashPlayerData.Save(CR, newPlayer);
