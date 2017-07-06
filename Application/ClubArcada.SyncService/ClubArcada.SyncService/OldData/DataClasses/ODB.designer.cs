@@ -111,9 +111,6 @@ namespace ClubArcada.SyncService.OldData.DataClasses
     partial void InsertUserRole(UserRole instance);
     partial void UpdateUserRole(UserRole instance);
     partial void DeleteUserRole(UserRole instance);
-    partial void InsertUser(User instance);
-    partial void UpdateUser(User instance);
-    partial void DeleteUser(User instance);
     partial void InsertUserSetting(UserSetting instance);
     partial void UpdateUserSetting(UserSetting instance);
     partial void DeleteUserSetting(UserSetting instance);
@@ -123,10 +120,13 @@ namespace ClubArcada.SyncService.OldData.DataClasses
     partial void InsertTicket(Ticket instance);
     partial void UpdateTicket(Ticket instance);
     partial void DeleteTicket(Ticket instance);
+    partial void InsertUser(User instance);
+    partial void UpdateUser(User instance);
+    partial void DeleteUser(User instance);
     #endregion
 		
 		public ODBDataContext() : 
-				base(global::ClubArcada.SyncService.Properties.Settings.Default.PokerSystemConnectionString, mappingSource)
+				base(global::ClubArcada.SyncService.Properties.Settings.Default.PokerSystemConnectionString1, mappingSource)
 		{
 			OnCreated();
 		}
@@ -371,14 +371,6 @@ namespace ClubArcada.SyncService.OldData.DataClasses
 			}
 		}
 		
-		public System.Data.Linq.Table<User> Users
-		{
-			get
-			{
-				return this.GetTable<User>();
-			}
-		}
-		
 		public System.Data.Linq.Table<UserSetting> UserSettings
 		{
 			get
@@ -400,6 +392,14 @@ namespace ClubArcada.SyncService.OldData.DataClasses
 			get
 			{
 				return this.GetTable<Ticket>();
+			}
+		}
+		
+		public System.Data.Linq.Table<User> Users
+		{
+			get
+			{
+				return this.GetTable<User>();
 			}
 		}
 	}
@@ -7632,604 +7632,6 @@ namespace ClubArcada.SyncService.OldData.DataClasses
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Users")]
-	public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private System.Guid _UserId;
-		
-		private string _NickName;
-		
-		private string _FirstName;
-		
-		private string _LastName;
-		
-		private string _PeronalId;
-		
-		private string _Email;
-		
-		private string _PhoneNumber;
-		
-		private string _Comment;
-		
-		private string _Password;
-		
-		private bool _IsSms;
-		
-		private bool _IsMail;
-		
-		private bool _IsAdmin;
-		
-		private bool _IsBlocked;
-		
-		private System.DateTime _DateCreated;
-		
-		private System.Nullable<System.DateTime> _DateDeleted;
-		
-		private bool _IsPersonal;
-		
-		private System.Nullable<bool> _IsAutoReturn;
-		
-		private int _AdminLevel;
-		
-		private System.Nullable<bool> _IsVisibleForServiceUsers;
-		
-		private System.Nullable<bool> _IsWallet;
-		
-		private System.Data.Linq.Binary _Avatar;
-		
-		private EntitySet<Transaction> _Transactions;
-		
-		private EntitySet<UserRole> _UserRoles;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnUserIdChanging(System.Guid value);
-    partial void OnUserIdChanged();
-    partial void OnNickNameChanging(string value);
-    partial void OnNickNameChanged();
-    partial void OnFirstNameChanging(string value);
-    partial void OnFirstNameChanged();
-    partial void OnLastNameChanging(string value);
-    partial void OnLastNameChanged();
-    partial void OnPeronalIdChanging(string value);
-    partial void OnPeronalIdChanged();
-    partial void OnEmailChanging(string value);
-    partial void OnEmailChanged();
-    partial void OnPhoneNumberChanging(string value);
-    partial void OnPhoneNumberChanged();
-    partial void OnCommentChanging(string value);
-    partial void OnCommentChanged();
-    partial void OnPasswordChanging(string value);
-    partial void OnPasswordChanged();
-    partial void OnIsSmsChanging(bool value);
-    partial void OnIsSmsChanged();
-    partial void OnIsMailChanging(bool value);
-    partial void OnIsMailChanged();
-    partial void OnIsAdminChanging(bool value);
-    partial void OnIsAdminChanged();
-    partial void OnIsBlockedChanging(bool value);
-    partial void OnIsBlockedChanged();
-    partial void OnDateCreatedChanging(System.DateTime value);
-    partial void OnDateCreatedChanged();
-    partial void OnDateDeletedChanging(System.Nullable<System.DateTime> value);
-    partial void OnDateDeletedChanged();
-    partial void OnIsPersonalChanging(bool value);
-    partial void OnIsPersonalChanged();
-    partial void OnIsAutoReturnChanging(System.Nullable<bool> value);
-    partial void OnIsAutoReturnChanged();
-    partial void OnAdminLevelChanging(int value);
-    partial void OnAdminLevelChanged();
-    partial void OnIsVisibleForServiceUsersChanging(System.Nullable<bool> value);
-    partial void OnIsVisibleForServiceUsersChanged();
-    partial void OnIsWalletChanging(System.Nullable<bool> value);
-    partial void OnIsWalletChanged();
-    partial void OnAvatarChanging(System.Data.Linq.Binary value);
-    partial void OnAvatarChanged();
-    #endregion
-		
-		public User()
-		{
-			this._Transactions = new EntitySet<Transaction>(new Action<Transaction>(this.attach_Transactions), new Action<Transaction>(this.detach_Transactions));
-			this._UserRoles = new EntitySet<UserRole>(new Action<UserRole>(this.attach_UserRoles), new Action<UserRole>(this.detach_UserRoles));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
-		public System.Guid UserId
-		{
-			get
-			{
-				return this._UserId;
-			}
-			set
-			{
-				if ((this._UserId != value))
-				{
-					this.OnUserIdChanging(value);
-					this.SendPropertyChanging();
-					this._UserId = value;
-					this.SendPropertyChanged("UserId");
-					this.OnUserIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NickName", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string NickName
-		{
-			get
-			{
-				return this._NickName;
-			}
-			set
-			{
-				if ((this._NickName != value))
-				{
-					this.OnNickNameChanging(value);
-					this.SendPropertyChanging();
-					this._NickName = value;
-					this.SendPropertyChanged("NickName");
-					this.OnNickNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FirstName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string FirstName
-		{
-			get
-			{
-				return this._FirstName;
-			}
-			set
-			{
-				if ((this._FirstName != value))
-				{
-					this.OnFirstNameChanging(value);
-					this.SendPropertyChanging();
-					this._FirstName = value;
-					this.SendPropertyChanged("FirstName");
-					this.OnFirstNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string LastName
-		{
-			get
-			{
-				return this._LastName;
-			}
-			set
-			{
-				if ((this._LastName != value))
-				{
-					this.OnLastNameChanging(value);
-					this.SendPropertyChanging();
-					this._LastName = value;
-					this.SendPropertyChanged("LastName");
-					this.OnLastNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PeronalId", DbType="NChar(10) NOT NULL", CanBeNull=false)]
-		public string PeronalId
-		{
-			get
-			{
-				return this._PeronalId;
-			}
-			set
-			{
-				if ((this._PeronalId != value))
-				{
-					this.OnPeronalIdChanging(value);
-					this.SendPropertyChanging();
-					this._PeronalId = value;
-					this.SendPropertyChanged("PeronalId");
-					this.OnPeronalIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Email
-		{
-			get
-			{
-				return this._Email;
-			}
-			set
-			{
-				if ((this._Email != value))
-				{
-					this.OnEmailChanging(value);
-					this.SendPropertyChanging();
-					this._Email = value;
-					this.SendPropertyChanged("Email");
-					this.OnEmailChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhoneNumber", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
-		public string PhoneNumber
-		{
-			get
-			{
-				return this._PhoneNumber;
-			}
-			set
-			{
-				if ((this._PhoneNumber != value))
-				{
-					this.OnPhoneNumberChanging(value);
-					this.SendPropertyChanging();
-					this._PhoneNumber = value;
-					this.SendPropertyChanged("PhoneNumber");
-					this.OnPhoneNumberChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Comment", DbType="VarChar(200) NOT NULL", CanBeNull=false)]
-		public string Comment
-		{
-			get
-			{
-				return this._Comment;
-			}
-			set
-			{
-				if ((this._Comment != value))
-				{
-					this.OnCommentChanging(value);
-					this.SendPropertyChanging();
-					this._Comment = value;
-					this.SendPropertyChanged("Comment");
-					this.OnCommentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Password", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Password
-		{
-			get
-			{
-				return this._Password;
-			}
-			set
-			{
-				if ((this._Password != value))
-				{
-					this.OnPasswordChanging(value);
-					this.SendPropertyChanging();
-					this._Password = value;
-					this.SendPropertyChanged("Password");
-					this.OnPasswordChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSms", DbType="Bit NOT NULL")]
-		public bool IsSms
-		{
-			get
-			{
-				return this._IsSms;
-			}
-			set
-			{
-				if ((this._IsSms != value))
-				{
-					this.OnIsSmsChanging(value);
-					this.SendPropertyChanging();
-					this._IsSms = value;
-					this.SendPropertyChanged("IsSms");
-					this.OnIsSmsChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsMail", DbType="Bit NOT NULL")]
-		public bool IsMail
-		{
-			get
-			{
-				return this._IsMail;
-			}
-			set
-			{
-				if ((this._IsMail != value))
-				{
-					this.OnIsMailChanging(value);
-					this.SendPropertyChanging();
-					this._IsMail = value;
-					this.SendPropertyChanged("IsMail");
-					this.OnIsMailChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsAdmin", DbType="Bit NOT NULL")]
-		public bool IsAdmin
-		{
-			get
-			{
-				return this._IsAdmin;
-			}
-			set
-			{
-				if ((this._IsAdmin != value))
-				{
-					this.OnIsAdminChanging(value);
-					this.SendPropertyChanging();
-					this._IsAdmin = value;
-					this.SendPropertyChanged("IsAdmin");
-					this.OnIsAdminChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsBlocked", DbType="Bit NOT NULL")]
-		public bool IsBlocked
-		{
-			get
-			{
-				return this._IsBlocked;
-			}
-			set
-			{
-				if ((this._IsBlocked != value))
-				{
-					this.OnIsBlockedChanging(value);
-					this.SendPropertyChanging();
-					this._IsBlocked = value;
-					this.SendPropertyChanged("IsBlocked");
-					this.OnIsBlockedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateCreated", DbType="DateTime NOT NULL")]
-		public System.DateTime DateCreated
-		{
-			get
-			{
-				return this._DateCreated;
-			}
-			set
-			{
-				if ((this._DateCreated != value))
-				{
-					this.OnDateCreatedChanging(value);
-					this.SendPropertyChanging();
-					this._DateCreated = value;
-					this.SendPropertyChanged("DateCreated");
-					this.OnDateCreatedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateDeleted", DbType="DateTime")]
-		public System.Nullable<System.DateTime> DateDeleted
-		{
-			get
-			{
-				return this._DateDeleted;
-			}
-			set
-			{
-				if ((this._DateDeleted != value))
-				{
-					this.OnDateDeletedChanging(value);
-					this.SendPropertyChanging();
-					this._DateDeleted = value;
-					this.SendPropertyChanged("DateDeleted");
-					this.OnDateDeletedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPersonal", DbType="Bit NOT NULL")]
-		public bool IsPersonal
-		{
-			get
-			{
-				return this._IsPersonal;
-			}
-			set
-			{
-				if ((this._IsPersonal != value))
-				{
-					this.OnIsPersonalChanging(value);
-					this.SendPropertyChanging();
-					this._IsPersonal = value;
-					this.SendPropertyChanged("IsPersonal");
-					this.OnIsPersonalChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsAutoReturn", DbType="Bit")]
-		public System.Nullable<bool> IsAutoReturn
-		{
-			get
-			{
-				return this._IsAutoReturn;
-			}
-			set
-			{
-				if ((this._IsAutoReturn != value))
-				{
-					this.OnIsAutoReturnChanging(value);
-					this.SendPropertyChanging();
-					this._IsAutoReturn = value;
-					this.SendPropertyChanged("IsAutoReturn");
-					this.OnIsAutoReturnChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AdminLevel", DbType="Int NOT NULL")]
-		public int AdminLevel
-		{
-			get
-			{
-				return this._AdminLevel;
-			}
-			set
-			{
-				if ((this._AdminLevel != value))
-				{
-					this.OnAdminLevelChanging(value);
-					this.SendPropertyChanging();
-					this._AdminLevel = value;
-					this.SendPropertyChanged("AdminLevel");
-					this.OnAdminLevelChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsVisibleForServiceUsers", DbType="Bit")]
-		public System.Nullable<bool> IsVisibleForServiceUsers
-		{
-			get
-			{
-				return this._IsVisibleForServiceUsers;
-			}
-			set
-			{
-				if ((this._IsVisibleForServiceUsers != value))
-				{
-					this.OnIsVisibleForServiceUsersChanging(value);
-					this.SendPropertyChanging();
-					this._IsVisibleForServiceUsers = value;
-					this.SendPropertyChanged("IsVisibleForServiceUsers");
-					this.OnIsVisibleForServiceUsersChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsWallet", DbType="Bit")]
-		public System.Nullable<bool> IsWallet
-		{
-			get
-			{
-				return this._IsWallet;
-			}
-			set
-			{
-				if ((this._IsWallet != value))
-				{
-					this.OnIsWalletChanging(value);
-					this.SendPropertyChanging();
-					this._IsWallet = value;
-					this.SendPropertyChanged("IsWallet");
-					this.OnIsWalletChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Avatar", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
-		public System.Data.Linq.Binary Avatar
-		{
-			get
-			{
-				return this._Avatar;
-			}
-			set
-			{
-				if ((this._Avatar != value))
-				{
-					this.OnAvatarChanging(value);
-					this.SendPropertyChanging();
-					this._Avatar = value;
-					this.SendPropertyChanged("Avatar");
-					this.OnAvatarChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Transaction", Storage="_Transactions", ThisKey="UserId", OtherKey="UserId")]
-		public EntitySet<Transaction> Transactions
-		{
-			get
-			{
-				return this._Transactions;
-			}
-			set
-			{
-				this._Transactions.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_UserRole", Storage="_UserRoles", ThisKey="UserId", OtherKey="UserId")]
-		public EntitySet<UserRole> UserRoles
-		{
-			get
-			{
-				return this._UserRoles;
-			}
-			set
-			{
-				this._UserRoles.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Transactions(Transaction entity)
-		{
-			this.SendPropertyChanging();
-			entity.User = this;
-		}
-		
-		private void detach_Transactions(Transaction entity)
-		{
-			this.SendPropertyChanging();
-			entity.User = null;
-		}
-		
-		private void attach_UserRoles(UserRole entity)
-		{
-			this.SendPropertyChanging();
-			entity.User = this;
-		}
-		
-		private void detach_UserRoles(UserRole entity)
-		{
-			this.SendPropertyChanging();
-			entity.User = null;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.UserSettings")]
 	public partial class UserSetting : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -8749,6 +8151,652 @@ namespace ClubArcada.SyncService.OldData.DataClasses
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Users")]
+	public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _UserId;
+		
+		private string _NickName;
+		
+		private string _FirstName;
+		
+		private string _LastName;
+		
+		private string _PeronalId;
+		
+		private string _Email;
+		
+		private string _PhoneNumber;
+		
+		private string _Comment;
+		
+		private string _Password;
+		
+		private bool _IsSms;
+		
+		private bool _IsMail;
+		
+		private bool _IsAdmin;
+		
+		private bool _IsBlocked;
+		
+		private System.DateTime _DateCreated;
+		
+		private System.Nullable<System.DateTime> _DateDeleted;
+		
+		private bool _IsPersonal;
+		
+		private System.Nullable<bool> _IsAutoReturn;
+		
+		private int _AdminLevel;
+		
+		private System.Nullable<bool> _IsVisibleForServiceUsers;
+		
+		private System.Nullable<bool> _IsWallet;
+		
+		private System.Data.Linq.Binary _Avatar;
+		
+		private string _BirthId;
+		
+		private string _PCardId;
+		
+		private EntitySet<Transaction> _Transactions;
+		
+		private EntitySet<UserRole> _UserRoles;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnUserIdChanging(System.Guid value);
+    partial void OnUserIdChanged();
+    partial void OnNickNameChanging(string value);
+    partial void OnNickNameChanged();
+    partial void OnFirstNameChanging(string value);
+    partial void OnFirstNameChanged();
+    partial void OnLastNameChanging(string value);
+    partial void OnLastNameChanged();
+    partial void OnPeronalIdChanging(string value);
+    partial void OnPeronalIdChanged();
+    partial void OnEmailChanging(string value);
+    partial void OnEmailChanged();
+    partial void OnPhoneNumberChanging(string value);
+    partial void OnPhoneNumberChanged();
+    partial void OnCommentChanging(string value);
+    partial void OnCommentChanged();
+    partial void OnPasswordChanging(string value);
+    partial void OnPasswordChanged();
+    partial void OnIsSmsChanging(bool value);
+    partial void OnIsSmsChanged();
+    partial void OnIsMailChanging(bool value);
+    partial void OnIsMailChanged();
+    partial void OnIsAdminChanging(bool value);
+    partial void OnIsAdminChanged();
+    partial void OnIsBlockedChanging(bool value);
+    partial void OnIsBlockedChanged();
+    partial void OnDateCreatedChanging(System.DateTime value);
+    partial void OnDateCreatedChanged();
+    partial void OnDateDeletedChanging(System.Nullable<System.DateTime> value);
+    partial void OnDateDeletedChanged();
+    partial void OnIsPersonalChanging(bool value);
+    partial void OnIsPersonalChanged();
+    partial void OnIsAutoReturnChanging(System.Nullable<bool> value);
+    partial void OnIsAutoReturnChanged();
+    partial void OnAdminLevelChanging(int value);
+    partial void OnAdminLevelChanged();
+    partial void OnIsVisibleForServiceUsersChanging(System.Nullable<bool> value);
+    partial void OnIsVisibleForServiceUsersChanged();
+    partial void OnIsWalletChanging(System.Nullable<bool> value);
+    partial void OnIsWalletChanged();
+    partial void OnAvatarChanging(System.Data.Linq.Binary value);
+    partial void OnAvatarChanged();
+    partial void OnBirthIdChanging(string value);
+    partial void OnBirthIdChanged();
+    partial void OnPCardIdChanging(string value);
+    partial void OnPCardIdChanged();
+    #endregion
+		
+		public User()
+		{
+			this._Transactions = new EntitySet<Transaction>(new Action<Transaction>(this.attach_Transactions), new Action<Transaction>(this.detach_Transactions));
+			this._UserRoles = new EntitySet<UserRole>(new Action<UserRole>(this.attach_UserRoles), new Action<UserRole>(this.detach_UserRoles));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NickName", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string NickName
+		{
+			get
+			{
+				return this._NickName;
+			}
+			set
+			{
+				if ((this._NickName != value))
+				{
+					this.OnNickNameChanging(value);
+					this.SendPropertyChanging();
+					this._NickName = value;
+					this.SendPropertyChanged("NickName");
+					this.OnNickNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FirstName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string FirstName
+		{
+			get
+			{
+				return this._FirstName;
+			}
+			set
+			{
+				if ((this._FirstName != value))
+				{
+					this.OnFirstNameChanging(value);
+					this.SendPropertyChanging();
+					this._FirstName = value;
+					this.SendPropertyChanged("FirstName");
+					this.OnFirstNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string LastName
+		{
+			get
+			{
+				return this._LastName;
+			}
+			set
+			{
+				if ((this._LastName != value))
+				{
+					this.OnLastNameChanging(value);
+					this.SendPropertyChanging();
+					this._LastName = value;
+					this.SendPropertyChanged("LastName");
+					this.OnLastNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PeronalId", DbType="NChar(10) NOT NULL", CanBeNull=false)]
+		public string PeronalId
+		{
+			get
+			{
+				return this._PeronalId;
+			}
+			set
+			{
+				if ((this._PeronalId != value))
+				{
+					this.OnPeronalIdChanging(value);
+					this.SendPropertyChanging();
+					this._PeronalId = value;
+					this.SendPropertyChanged("PeronalId");
+					this.OnPeronalIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Email
+		{
+			get
+			{
+				return this._Email;
+			}
+			set
+			{
+				if ((this._Email != value))
+				{
+					this.OnEmailChanging(value);
+					this.SendPropertyChanging();
+					this._Email = value;
+					this.SendPropertyChanged("Email");
+					this.OnEmailChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhoneNumber", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
+		public string PhoneNumber
+		{
+			get
+			{
+				return this._PhoneNumber;
+			}
+			set
+			{
+				if ((this._PhoneNumber != value))
+				{
+					this.OnPhoneNumberChanging(value);
+					this.SendPropertyChanging();
+					this._PhoneNumber = value;
+					this.SendPropertyChanged("PhoneNumber");
+					this.OnPhoneNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Comment", DbType="VarChar(200) NOT NULL", CanBeNull=false)]
+		public string Comment
+		{
+			get
+			{
+				return this._Comment;
+			}
+			set
+			{
+				if ((this._Comment != value))
+				{
+					this.OnCommentChanging(value);
+					this.SendPropertyChanging();
+					this._Comment = value;
+					this.SendPropertyChanged("Comment");
+					this.OnCommentChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Password", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string Password
+		{
+			get
+			{
+				return this._Password;
+			}
+			set
+			{
+				if ((this._Password != value))
+				{
+					this.OnPasswordChanging(value);
+					this.SendPropertyChanging();
+					this._Password = value;
+					this.SendPropertyChanged("Password");
+					this.OnPasswordChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSms", DbType="Bit NOT NULL")]
+		public bool IsSms
+		{
+			get
+			{
+				return this._IsSms;
+			}
+			set
+			{
+				if ((this._IsSms != value))
+				{
+					this.OnIsSmsChanging(value);
+					this.SendPropertyChanging();
+					this._IsSms = value;
+					this.SendPropertyChanged("IsSms");
+					this.OnIsSmsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsMail", DbType="Bit NOT NULL")]
+		public bool IsMail
+		{
+			get
+			{
+				return this._IsMail;
+			}
+			set
+			{
+				if ((this._IsMail != value))
+				{
+					this.OnIsMailChanging(value);
+					this.SendPropertyChanging();
+					this._IsMail = value;
+					this.SendPropertyChanged("IsMail");
+					this.OnIsMailChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsAdmin", DbType="Bit NOT NULL")]
+		public bool IsAdmin
+		{
+			get
+			{
+				return this._IsAdmin;
+			}
+			set
+			{
+				if ((this._IsAdmin != value))
+				{
+					this.OnIsAdminChanging(value);
+					this.SendPropertyChanging();
+					this._IsAdmin = value;
+					this.SendPropertyChanged("IsAdmin");
+					this.OnIsAdminChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsBlocked", DbType="Bit NOT NULL")]
+		public bool IsBlocked
+		{
+			get
+			{
+				return this._IsBlocked;
+			}
+			set
+			{
+				if ((this._IsBlocked != value))
+				{
+					this.OnIsBlockedChanging(value);
+					this.SendPropertyChanging();
+					this._IsBlocked = value;
+					this.SendPropertyChanged("IsBlocked");
+					this.OnIsBlockedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateCreated", DbType="DateTime NOT NULL")]
+		public System.DateTime DateCreated
+		{
+			get
+			{
+				return this._DateCreated;
+			}
+			set
+			{
+				if ((this._DateCreated != value))
+				{
+					this.OnDateCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._DateCreated = value;
+					this.SendPropertyChanged("DateCreated");
+					this.OnDateCreatedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateDeleted", DbType="DateTime")]
+		public System.Nullable<System.DateTime> DateDeleted
+		{
+			get
+			{
+				return this._DateDeleted;
+			}
+			set
+			{
+				if ((this._DateDeleted != value))
+				{
+					this.OnDateDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._DateDeleted = value;
+					this.SendPropertyChanged("DateDeleted");
+					this.OnDateDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPersonal", DbType="Bit NOT NULL")]
+		public bool IsPersonal
+		{
+			get
+			{
+				return this._IsPersonal;
+			}
+			set
+			{
+				if ((this._IsPersonal != value))
+				{
+					this.OnIsPersonalChanging(value);
+					this.SendPropertyChanging();
+					this._IsPersonal = value;
+					this.SendPropertyChanged("IsPersonal");
+					this.OnIsPersonalChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsAutoReturn", DbType="Bit")]
+		public System.Nullable<bool> IsAutoReturn
+		{
+			get
+			{
+				return this._IsAutoReturn;
+			}
+			set
+			{
+				if ((this._IsAutoReturn != value))
+				{
+					this.OnIsAutoReturnChanging(value);
+					this.SendPropertyChanging();
+					this._IsAutoReturn = value;
+					this.SendPropertyChanged("IsAutoReturn");
+					this.OnIsAutoReturnChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AdminLevel", DbType="Int NOT NULL")]
+		public int AdminLevel
+		{
+			get
+			{
+				return this._AdminLevel;
+			}
+			set
+			{
+				if ((this._AdminLevel != value))
+				{
+					this.OnAdminLevelChanging(value);
+					this.SendPropertyChanging();
+					this._AdminLevel = value;
+					this.SendPropertyChanged("AdminLevel");
+					this.OnAdminLevelChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsVisibleForServiceUsers", DbType="Bit")]
+		public System.Nullable<bool> IsVisibleForServiceUsers
+		{
+			get
+			{
+				return this._IsVisibleForServiceUsers;
+			}
+			set
+			{
+				if ((this._IsVisibleForServiceUsers != value))
+				{
+					this.OnIsVisibleForServiceUsersChanging(value);
+					this.SendPropertyChanging();
+					this._IsVisibleForServiceUsers = value;
+					this.SendPropertyChanged("IsVisibleForServiceUsers");
+					this.OnIsVisibleForServiceUsersChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsWallet", DbType="Bit")]
+		public System.Nullable<bool> IsWallet
+		{
+			get
+			{
+				return this._IsWallet;
+			}
+			set
+			{
+				if ((this._IsWallet != value))
+				{
+					this.OnIsWalletChanging(value);
+					this.SendPropertyChanging();
+					this._IsWallet = value;
+					this.SendPropertyChanged("IsWallet");
+					this.OnIsWalletChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Avatar", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary Avatar
+		{
+			get
+			{
+				return this._Avatar;
+			}
+			set
+			{
+				if ((this._Avatar != value))
+				{
+					this.OnAvatarChanging(value);
+					this.SendPropertyChanging();
+					this._Avatar = value;
+					this.SendPropertyChanged("Avatar");
+					this.OnAvatarChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BirthId", DbType="NVarChar(50)")]
+		public string BirthId
+		{
+			get
+			{
+				return this._BirthId;
+			}
+			set
+			{
+				if ((this._BirthId != value))
+				{
+					this.OnBirthIdChanging(value);
+					this.SendPropertyChanging();
+					this._BirthId = value;
+					this.SendPropertyChanged("BirthId");
+					this.OnBirthIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PCardId", DbType="NVarChar(50)")]
+		public string PCardId
+		{
+			get
+			{
+				return this._PCardId;
+			}
+			set
+			{
+				if ((this._PCardId != value))
+				{
+					this.OnPCardIdChanging(value);
+					this.SendPropertyChanging();
+					this._PCardId = value;
+					this.SendPropertyChanged("PCardId");
+					this.OnPCardIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Transaction", Storage="_Transactions", ThisKey="UserId", OtherKey="UserId")]
+		public EntitySet<Transaction> Transactions
+		{
+			get
+			{
+				return this._Transactions;
+			}
+			set
+			{
+				this._Transactions.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_UserRole", Storage="_UserRoles", ThisKey="UserId", OtherKey="UserId")]
+		public EntitySet<UserRole> UserRoles
+		{
+			get
+			{
+				return this._UserRoles;
+			}
+			set
+			{
+				this._UserRoles.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Transactions(Transaction entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_Transactions(Transaction entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
+		}
+		
+		private void attach_UserRoles(UserRole entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_UserRoles(UserRole entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
 		}
 	}
 }

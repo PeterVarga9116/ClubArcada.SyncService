@@ -32,5 +32,15 @@ namespace ClubArcada.SyncService.Properties {
                 return ((string)(this["PokerSystemConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=82.119.117.77;Initial Catalog=PokerSystem;User ID=PeterVarga")]
+        public string PokerSystemConnectionString1 {
+            get {
+                return ((string)(this["PokerSystemConnectionString1"]));
+            }
+        }
     }
 }

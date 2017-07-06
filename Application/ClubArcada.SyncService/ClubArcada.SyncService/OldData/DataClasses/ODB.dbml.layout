@@ -164,32 +164,12 @@
         <elementListCompartment Id="ecf08897-ff11-49b5-98a1-5f068593baef" absoluteBounds="3.515, 1.71, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="5fa23d74-1fb8-4b7b-aad7-ebee6549fc9d" absoluteBounds="0.75, 2.5, 2, 4.8477197265624987">
-      <DataClassMoniker Name="/ODBDataContext/User" />
-      <nestedChildShapes>
-        <elementListCompartment Id="75e25394-66ab-41f8-84b4-ad8033897bae" absoluteBounds="0.765, 2.96, 1.9700000000000002, 4.2877197265625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <classShape Id="673a5419-f431-48aa-8022-74c7c580c0bb" absoluteBounds="9.75, 17.75, 2, 1.7708968098958309">
       <DataClassMoniker Name="/ODBDataContext/UserSetting" />
       <nestedChildShapes>
         <elementListCompartment Id="c4c8e0d1-d993-45e0-8af5-26df65539d67" absoluteBounds="9.765, 18.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(2.75 : 6.17385986328125); (3.5 : 6.17385986328125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/ODBDataContext/User/User_Transaction" />
-      <nodes>
-        <classShapeMoniker Id="5fa23d74-1fb8-4b7b-aad7-ebee6549fc9d" />
-        <classShapeMoniker Id="a309d8f1-1884-4457-834b-c0d85fc2d6a4" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 3.43350341796875); (3.5 : 3.43350341796875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/ODBDataContext/User/User_UserRole" />
-      <nodes>
-        <classShapeMoniker Id="5fa23d74-1fb8-4b7b-aad7-ebee6549fc9d" />
-        <classShapeMoniker Id="9905bac4-3664-4640-bb85-4f30ee8a5271" />
-      </nodes>
-    </associationConnector>
     <classShape Id="19fa8117-400c-411a-bebd-4beee614c755" absoluteBounds="9.375, 14.75, 2, 1.9631982421874987">
       <DataClassMoniker Name="/ODBDataContext/TicketItem" />
       <nestedChildShapes>
@@ -202,5 +182,25 @@
         <elementListCompartment Id="180c5001-ff86-47a7-bfbd-c6dad9a4849d" absoluteBounds="12.39, 18.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <classShape Id="da138cde-23b1-433e-b785-5744deb21b3f" absoluteBounds="2, 2.5, 2, 5.2323225911458326">
+      <DataClassMoniker Name="/ODBDataContext/User" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4bce7778-82ec-4288-8f2e-9870c1a49293" absoluteBounds="2.015, 2.96, 1.9700000000000002, 4.672322591145833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(3 : 7.73232259114583); (3 : 8.75160970052083); (4.5 : 8.75160970052083); (4.5 : 8.50160970052083)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/ODBDataContext/User/User_Transaction" />
+      <nodes>
+        <classShapeMoniker Id="da138cde-23b1-433e-b785-5744deb21b3f" />
+        <classShapeMoniker Id="a309d8f1-1884-4457-834b-c0d85fc2d6a4" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(3 : 2.5); (3 : 1); (4.5 : 1); (4.5 : 1.25)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/ODBDataContext/User/User_UserRole" />
+      <nodes>
+        <classShapeMoniker Id="da138cde-23b1-433e-b785-5744deb21b3f" />
+        <classShapeMoniker Id="9905bac4-3664-4640-bb85-4f30ee8a5271" />
+      </nodes>
+    </associationConnector>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>

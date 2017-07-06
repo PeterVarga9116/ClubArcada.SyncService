@@ -8,6 +8,8 @@ namespace ClubArcada.SyncService
 {
     public partial class Service1 : ServiceBase
     {
+        private double _20Seconds = 20000;
+
         private double _1Minute = 60000;
         private double _2Minutes = 120000;
         private double _5Minutes = 300000;
@@ -23,7 +25,12 @@ namespace ClubArcada.SyncService
         private Timer _timerTransactions;
         private Timer _timerStructures;
         private Timer _timerTickets;
+        private Timer _timerCashGames;
+        private Timer _timerCashPlayers;
         private Timer _timerCashStates;
+        private Timer _timerDocuments;
+
+        private Timer _timerLiveTournamentPlayers;
 
         public Service1()
         {
@@ -32,6 +39,30 @@ namespace ClubArcada.SyncService
 
         protected override void OnStart(string[] args)
         {
+            _timerDocuments = new Timer();
+            _timerDocuments.Interval = _5Minutes;
+            _timerDocuments.Elapsed += _timerDocuments_Elapsed;
+            _timerDocuments.Enabled = true;
+            _timerDocuments.Start();
+
+            _timerLiveTournamentPlayers = new Timer();
+            _timerLiveTournamentPlayers.Interval = _20Seconds;
+            _timerLiveTournamentPlayers.Elapsed += _timerLiveTournamentPlayers_Elapsed;
+            _timerLiveTournamentPlayers.Enabled = true;
+            _timerLiveTournamentPlayers.Start();
+
+            _timerCashGames = new Timer();
+            _timerCashGames.Interval = _5Minutes;
+            _timerCashGames.Elapsed += _timerCashGames_Elapsed;
+            _timerCashGames.Enabled = true;
+            _timerCashGames.Start();
+
+            _timerCashPlayers = new Timer();
+            _timerCashPlayers.Interval = _5Minutes;
+            _timerCashPlayers.Elapsed += _timerCashPlayers_Elapsed;
+            _timerCashPlayers.Enabled = true;
+            _timerCashPlayers.Start();
+
             _timerCashStates = new Timer();
             _timerCashStates.Interval = _1Minute;
             _timerCashStates.Elapsed += _timerCashStates_Elapsed;
@@ -89,45 +120,52 @@ namespace ClubArcada.SyncService
             WriteErrorLog("SyncService started");
         }
 
-        private void _timerCashStates_Elapsed(object sender, ElapsedEventArgs e)
+        private void _timerDocuments_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
-                _timerCashStates.Stop();
-                SyncData.SyncData.SyncCashStates();
+                _timerDocuments.Stop();
+                SyncData.SyncData.GenerateAndSendTournamentReport();
             }
-            catch (Exception exp)
+            catch(Exception exp)
             {
-                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Cash States", exp.GetExceptionDetails());
+                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Documents", exp.GetExceptionDetails());
             }
             finally
             {
-                _timerCashStates.Interval = _5Minutes;
-                _timerCashStates.Start();
+                _timerDocuments.Start();
             }
+        }
+
+        private void _timerLiveTournamentPlayers_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Sync(_timerLiveTournamentPlayers, () => SyncData.SyncData.SyncLiveTournamentPlayers(), _20Seconds, "Live Tournament Players");
+        }
+
+        private void _timerCashPlayers_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Sync(_timerCashPlayers, () => SyncData.SyncData.SyncCashPlayers(), _2Minutes, "Cash Players");
+        }
+
+        private void _timerCashGames_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Sync(_timerCashGames, () => SyncData.SyncData.SyncCashGames(), _5Minutes, "Cash Games");
+        }
+
+        private void _timerCashStates_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Sync(_timerCashStates, () => SyncData.SyncData.SyncCashStates(), _5Minutes, "Cash States");
         }
 
         private void _timerTickets_Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
-            {
-                _timerTickets.Stop();
-                SyncData.SyncData.SyncTickets();
-                SyncData.SyncData.SyncTicketItems();
-            }
-            catch (Exception exp)
-            {
-                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Tickets", exp.GetExceptionDetails());
-            }
-            finally
-            {
-                _timerTickets.Interval = _5Minutes;
-                _timerTickets.Start();
-            }
+            Sync(_timerTickets, () => SyncData.SyncData.SyncTickets(), _1Minute, "Tickets", () => SyncData.SyncData.SyncTicketItems());
         }
 
         private void _timerStructures_Elapsed(object sender, ElapsedEventArgs e)
         {
+
+
             try
             {
                 _timerStructures.Stop();
@@ -147,74 +185,22 @@ namespace ClubArcada.SyncService
 
         private void _timerSyncTournamentCashouts_Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
-            {
-                _timerSyncTournamentCashouts.Stop();
-                SyncData.SyncData.SyncTournamentCashouts();
-            }
-            catch (Exception exp)
-            {
-                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - TournamentCashouts", exp.GetExceptionDetails());
-            }
-            finally
-            {
-                _timerSyncTournamentCashouts.Interval = _30Minutes;
-                _timerSyncTournamentCashouts.Start();
-            }
+            Sync(_timerSyncTournamentCashouts, () => SyncData.SyncData.SyncTournamentCashouts(), _1Minute, "TournamentCashouts");
         }
 
         private void _timerSyncLeagues_Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
-            {
-                _timerSyncLeagues.Stop();
-                SyncData.SyncData.SyncLeagues();
-            }
-            catch (Exception exp)
-            {
-                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Leagues", exp.GetExceptionDetails());
-            }
-            finally
-            {
-                _timerSyncLeagues.Interval = _1Hour;
-                _timerSyncLeagues.Start();
-            }
+            Sync(_timerSyncLeagues, () => SyncData.SyncData.SyncLeagues(), _1Minute, "Leagues");
         }
 
         private void _timerSyncRequests_Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
-            {
-                _timerSyncRequests.Stop();
-                SyncData.SyncData.SyncRequests();
-            }
-            catch (Exception exp)
-            {
-                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Requests", exp.GetExceptionDetails());
-            }
-            finally
-            {
-                _timerSyncRequests.Interval = _1Minute;
-                _timerSyncRequests.Start();
-            }
+            Sync(_timerSyncRequests, () => SyncData.SyncData.SyncRequests(), _1Minute, "Requests");
         }
 
         private void _timerTransactions_Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
-            {
-                _timerTransactions.Stop();
-                SyncData.SyncData.SyncTransactions();
-            }
-            catch (Exception exp)
-            {
-                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Transactions", exp.GetExceptionDetails());
-            }
-            finally
-            {
-                _timerTransactions.Interval = _1Minute;
-                _timerTransactions.Start();
-            }
+            Sync(_timerTransactions, () => SyncData.SyncData.SyncTransactions(), _1Minute, "Transactions");
         }
 
         private void _timerTournamentResults_Elapsed(object sender, ElapsedEventArgs e)
@@ -223,7 +209,7 @@ namespace ClubArcada.SyncService
             {
                 _timerTournamentResults.Stop();
                 SyncData.SyncData.SyncTournaments();
-                SyncData.SyncData.SncTournamentResulst();
+                SyncData.SyncData.SyncTournamentResulst();
             }
             catch (Exception exp)
             {
@@ -238,20 +224,7 @@ namespace ClubArcada.SyncService
 
         private void _timerSyncUsers_Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
-            {
-                _timerSyncUsers.Stop();
-                SyncData.SyncData.SyncUsers();
-            }
-            catch (Exception exp)
-            {
-                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Users", exp.GetExceptionDetails());
-            }
-            finally
-            {
-                _timerSyncUsers.Interval = _1Minute;
-                _timerSyncUsers.Start();
-            }
+            Sync(_timerSyncUsers, () => SyncData.SyncData.SyncUsers(), _1Minute, "Users");
         }
 
         protected override void OnStop()
@@ -267,6 +240,27 @@ namespace ClubArcada.SyncService
             sw.Close();
         }
 
+        private void Sync(Timer timer, Action action, double interval, string name, Action callback = null)
+        {
+            try
+            {
+                timer.Stop();
+                action();
+                if(callback.IsNotNull())
+                {
+                    callback();
+                }
+            }
+            catch (Exception exp)
+            {
+                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - " + name, exp.GetExceptionDetails());
+            }
+            finally
+            {
+                timer.Interval = interval;
+                timer.Start();
+            }
+        }
 
     }
 }
