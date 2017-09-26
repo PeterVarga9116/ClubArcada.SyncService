@@ -122,6 +122,8 @@ namespace ClubArcada.SyncService.SyncData
                 {
                     var tu = newTours.SingleOrDefault(n => n.Id == u.TournamentId);
 
+                    tu.Date = u.Date;
+                    tu.IsRunning = u.IsRunning.True();
                     tu.DateDeleted = u.DateDeleted;
                     tu.DateEnded = u.DateEnded;
                     tu.ReEntryCount = u.Detail.ReEntryCount;
