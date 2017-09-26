@@ -31,7 +31,22 @@ namespace ClubArcada.SyncService.OldData.Data
         {
             using (var appDC = new ODBDataContext(CS))
             {
-                var tours = appDC.Tournaments.ToList();
+                var tours = appDC.Tournaments.Where(t => t.Date > DateTime.Now.AddMonths(-1)).ToList();
+
+                foreach (var t in tours)
+                {
+                    t.Detail = appDC.TournamentDetails.SingleOrDefault(td => td.TournamentId == t.TournamentId);
+                }
+
+                return tours;
+            }
+        }
+
+        public static List<Tournament> GetCashGames()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                var tours = appDC.Tournaments.Where(t => t.GameType == 'C').ToList();
 
                 foreach (var t in tours)
                 {

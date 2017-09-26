@@ -23,6 +23,7 @@ namespace ClubArcada.SyncService
         private Timer _timerTransactions;
         private Timer _timerStructures;
         private Timer _timerTickets;
+        private Timer _timerCashGames;
         private Timer _timerCashStates;
 
         public Service1()
@@ -32,6 +33,12 @@ namespace ClubArcada.SyncService
 
         protected override void OnStart(string[] args)
         {
+            _timerCashGames = new Timer();
+            _timerCashGames.Interval = _1Minute;
+            _timerCashGames.Elapsed += _timerCashGames_Elapsed; ;
+            _timerCashGames.Enabled = true;
+            _timerCashGames.Start();
+
             _timerCashStates = new Timer();
             _timerCashStates.Interval = _1Minute;
             _timerCashStates.Elapsed += _timerCashStates_Elapsed;
@@ -87,6 +94,25 @@ namespace ClubArcada.SyncService
             _timerTransactions.Start();
 
             WriteErrorLog("SyncService started");
+        }
+
+        private void _timerCashGames_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                _timerCashStates.Stop();
+                SyncData.SyncData.SyncCashGames();
+                SyncData.SyncData.SyncCashPlayers();
+            }
+            catch (Exception exp)
+            {
+                ClubArcada.Common.Mailer.Mailer.SendErrorMail("Sync Error - Cash States", exp.GetExceptionDetails());
+            }
+            finally
+            {
+                _timerCashStates.Interval = _5Minutes;
+                _timerCashStates.Start();
+            }
         }
 
         private void _timerCashStates_Elapsed(object sender, ElapsedEventArgs e)

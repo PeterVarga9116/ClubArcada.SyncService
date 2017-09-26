@@ -11,7 +11,7 @@ namespace ClubArcada.UnitTest
         {
             try
             {
-                SyncService.SyncData.SyncData.SyncTournaments();
+                SyncService.SyncData.SyncData.SyncCashPlayers();
             }
             catch (Exception exp)
             {
