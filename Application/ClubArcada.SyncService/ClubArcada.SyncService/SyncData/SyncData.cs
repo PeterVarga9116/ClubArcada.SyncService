@@ -76,7 +76,13 @@ namespace ClubArcada.SyncService.SyncData
             {
                 if (newList.Select(x => x.Id).Contains(r.LeagueId))
                 {
-                    //var toUpdate = newList.SingleOrDefault(y => y.Id == r.LeagueId);
+                    var toUpdate = newList.SingleOrDefault(y => y.Id == r.LeagueId);
+
+                    if (toUpdate.IsActive != r.IsActive)
+                    {
+                        toUpdate.IsActive = r.IsActive;
+                        Common.BusinessObjects.Data.LeagueData.Save(CR, toUpdate);
+                    }
                 }
                 else
                 {
@@ -88,6 +94,36 @@ namespace ClubArcada.SyncService.SyncData
                         IsActive = r.IsActive,
                         DateDeleted = null,
                         Name = r.Name
+                    });
+                }
+            }
+        }
+
+        public static void SyncBanners()
+        {
+            var oldList = OldData.Data.OldDbData.GetBanners();
+            var newList = Common.BusinessObjects.Data.BannerData.GetList(CR);
+
+            foreach (var r in oldList)
+            {
+                if (newList.Select(x => x.Id).Contains(r.Id))
+                {
+                    //var toUpdate = newList.SingleOrDefault(y => y.Id == r.LeagueId);
+                }
+                else
+                {
+                    Common.BusinessObjects.Data.BannerData.Save(CR, new Banner()
+                    {
+                        Id = r.Id,
+                        CreatedByUserId = CR.UserId,
+                        DateCreated = DateTime.Now,
+                        Data = r.Data,
+                        Link = r.Url == null ? "" : r.Url,
+                        SortNumber = r.SortNumber,
+                        TargetType = r.TargetType == null ? "" : r.TargetType,
+                        DateDeleted = r.DateDeleted,
+                        Description = r.Description == null ? "" : r.Description,
+                        DateDeactivated = r.DateDeleted
                     });
                 }
             }

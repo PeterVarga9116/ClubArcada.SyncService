@@ -57,6 +57,14 @@ namespace ClubArcada.SyncService.OldData.Data
             }
         }
 
+        public static List<Banner> GetBanners()
+        {
+            using (var appDC = new ODBDataContext(CS))
+            {
+                return appDC.Banners.ToList();
+            }
+        }
+
         public static List<TournamentCashout> GetTournamentCashouts()
         {
             using (var appDC = new ODBDataContext(CS))
